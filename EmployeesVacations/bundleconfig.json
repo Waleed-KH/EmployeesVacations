@@ -1,0 +1,43 @@
+[
+  {
+    "outputFileName": "wwwroot/lib/modernizr/modernizr.min.js",
+    "inputFiles": [
+      "wwwroot/lib/modernizr/modernizr.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/bootbox.js/bootbox.min.js",
+    "inputFiles": [
+      "wwwroot/lib/bootbox.js/bootbox.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/wms/js/wms.js",
+    "inputFiles": [
+      "wwwroot/lib/wms/js/wms.core.js",
+      "wwwroot/lib/wms/js/wms.document.js",
+      "wwwroot/lib/wms/js/wms.ui.js",
+      "wwwroot/lib/wms/js/wms.ajax.js",
+      "wwwroot/lib/wms/js/wms.user.js",
+      "wwwroot/lib/wms/js/wms.init.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/wms/js/wms.min.js",
+    "inputFiles": [
+      "wwwroot/lib/wms/js/wms.js"
+    ]
+  },
+  {
+    "outputFileName": "#\\ASP.NET Core\\EmployeesVacations\\EmployeesVacations\\wwwroot\\css\\site.min.css",
+    "inputFiles": [
+      "#\\ASP.NET Core\\EmployeesVacations\\EmployeesVacations\\wwwroot\\css\\site.css"
+    ]
+  },
+  {
+    "outputFileName": "#\\ASP.NET Core\\EmployeesVacations\\EmployeesVacations\\wwwroot\\lib\\js-cookie\\src\\js.cookie.min.js",
+    "inputFiles": [
+      "#\\ASP.NET Core\\EmployeesVacations\\EmployeesVacations\\wwwroot\\lib\\js-cookie\\src\\js.cookie.js"
+    ]
+  }
+]

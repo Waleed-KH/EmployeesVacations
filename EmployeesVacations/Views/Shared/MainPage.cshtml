@@ -1,0 +1,171 @@
+﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+@*@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@functions{
+	public string GetAntiXsrfRequestToken()
+	{
+		return Xsrf.GetAndStoreTokens(Context).RequestToken;
+	}
+}*@
+<!DOCTYPE html>
+<!--[if lt IE 7]>		<html lang="en" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>			<html lang="en" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>			<html lang="en" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en" class="no-js">
+<!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>MyApp</title>
+	<environment names="Development">
+		<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css">
+		<link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.css">
+		<link rel="stylesheet" href="~/lib/datatables/media/css/jquery.dataTables.css">
+		<link rel="stylesheet" href="~/lib/datatables/media/css/dataTables.bootstrap.css">
+		<link rel="stylesheet" href="~/lib/wms/css/wms.css">
+		<link rel="stylesheet" href="~/css/main.css">
+	</environment>
+	<environment names="Staging,Production">
+		<link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
+			  asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+			  asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+			  asp-fallback-href="~/lib/font-awesome/css/font-awesome.min.css"
+			  asp-fallback-test-class="fa" asp-fallback-test-property="display" asp-fallback-test-value="inline-block">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.15/css/jquery.dataTables.min.css"
+			  asp-fallback-href="~/lib/datatables/media/css/jquery.dataTables.min.css"
+			  asp-fallback-test-class="dataTables_wrapper" asp-fallback-test-property="position" asp-fallback-test-value="relative">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.15/css/dataTables.bootstrap.min.css"
+			  asp-fallback-href="~/lib/datatables/media/css/dataTables.bootstrap.min.css"
+			  asp-fallback-test-class="dataTable" asp-fallback-test-property="clear" asp-fallback-test-value="both">
+		<link rel="stylesheet" href="~/lib/wms/css/wms.min.css" asp-append-version="true">
+		<link rel="stylesheet" href="~/css/main.min.css" asp-append-version="true">
+	</environment>
+	@Html.Raw(JavaScriptSnippet.FullScript)
+</head>
+<body>
+	<div id="wrapper">
+		<nav id="navigation-top" class="navbar navbar-default navbar-fixed-top">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<div id="navbar-top-toggle" style="display: none;">
+						<button type="button" class="navbar-toggle collapsed" id="navbar-toggle-collapsed" data-toggle="collapse" data-target="#navbar-top-collapse" aria-expanded="false">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+					</div>
+					<a class="navbar-brand" id="logo" href="javascript:void(0)">MyApp</a>
+				</div>
+				<div id="navbar-top" style="display: none;">
+					<div class="collapse navbar-collapse" id="navbar-top-collapse">
+						<ul class="nav navbar-nav" id="navbar-top-left"></ul>
+						<ul class="nav navbar-nav navbar-right" id="navbar-top-right">
+							<li class="dropdown">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span id="navbar-user-name"></span> <span class="caret"></span></a>
+								<ul class="dropdown-menu" style="-moz-animation-duration: 0.5s; -o-animation-duration: 0.5s; -webkit-animation-duration: 0.5s; animation-duration: 0.5s;">
+									<li><a href="#" disabled><i class="fa fa-user"></i> My Account</a></li>
+									<li><a href="#" disabled><i class="fa fa-cog"></i> Account Settings</a></li>
+									<li role="separator" class="divider"></li>
+									<li><a href="#" data-action="signout"><i class="fa fa-sign-out"></i> Sign out</a></li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</nav>
+		<div id="contentWrapper" style="display: none;">
+		</div>
+		<div class="spinner" id="loading-spinner">
+			<div class="bounce1"></div>
+			<div class="bounce2"></div>
+			<div class="bounce3"></div>
+		</div>
+	</div>
+	<environment names="Development">
+		<script src="~/lib/modernizr/modernizr.js"></script>
+		<script src="~/lib/jquery/dist/jquery.js"></script>
+		<script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+		<script src="~/lib/jquery-form/src/jquery.form.js"></script>
+		<script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+		<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+		<script src="~/lib/bootbox.js/bootbox.js"></script>
+		<script src="~/lib/js-cookie/src/js.cookie.js"></script>
+		<script src="~/lib/datatables/media/js/jquery.dataTables.js"></script>
+		<script src="~/lib/datatables/media/js/dataTables.bootstrap.js"></script>
+		<script src="~/lib/wms/js/wms.js"></script>
+	</environment>
+	<environment names="Staging,Production">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"
+				asp-fallback-src="~/lib/modernizr/modernizr.min.js"
+				crossorigin="anonymous"
+				integrity="sha384-bPV3mA2eo3edoq56VzcPBmG1N1QVUfjYMxVIJPPzyFJyFZ8GFfN7Npt06Zr23qts">
+		</script>
+		<script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.2.1.min.js"
+				asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+				asp-fallback-test="window.jQuery"
+				crossorigin="anonymous"
+				integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f">
+		</script>
+		<script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
+				asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+				asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+				crossorigin="anonymous"
+				integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+		</script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.1/jquery.form.min.js"
+				asp-fallback-src="~/lib/jquery-form/dist/jquery.form.min.js"
+				asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.ajaxForm"
+				crossorigin="anonymous"
+				integrity="sha384-tIwI8+qJdZBtYYCKwRkjxBGQVZS3gGozr3CtI+5JF/oL1JmPEHzCEnIKbDbLTCer">
+		</script>
+		<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.16.0/jquery.validate.min.js"
+				asp-fallback-src="~/lib/jquery-validation/dist/jquery.validate.min.js"
+				asp-fallback-test="window.jQuery && window.jQuery.validator"
+				crossorigin="anonymous"
+				integrity="sha384-VoqiBWkuPrBO9LiESm+GubN/lYlsaMFUVN46L4g4k9bNmY9grTBw8AQZDrhAr7bT">
+		</script>
+		<script src="https://ajax.aspnetcdn.com/ajax/jquery.validation.unobtrusive/3.2.6/jquery.validate.unobtrusive.min.js"
+				asp-fallback-src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"
+				asp-fallback-test="window.jQuery && window.jQuery.validator && window.jQuery.validator.unobtrusive"
+				crossorigin="anonymous"
+				integrity="sha384-JrXK+k53HACyavUKOsL+NkmSesD2P+73eDMrbTtTk0h4RmOF8hF8apPlkp26JlyH">
+		</script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js"
+				asp-fallback-src="~/lib/bootbox.js/bootbox.min.js"
+				asp-fallback-test="window.jQuery && window.bootbox"
+				crossorigin="anonymous"
+				integrity="sha384-Nk2l95f1t/58dCc4FTWQZoXfrOoI2DkcpUvgbLk26lL64Yx3DeBbeftGruSisV3a">
+		</script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.1.4/js.cookie.min.js"
+				asp-fallback-src="~/lib/js-cookie/src/js.cookie.min.js"
+				asp-fallback-test="Cookies"
+				crossorigin="anonymous"
+				integrity="sha384-3C51VYzyLN6W+IdxzwqCdGDQUOJfaRbPH2h6z97sB+sD4nZ4FCymhVZFvHMGN2ZE">
+		</script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.15/js/jquery.dataTables.min.js"
+				asp-fallback-src="~/lib/datatables/media/js/jquery.dataTables.min.js"
+				asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.dataTable"
+				crossorigin="anonymous"
+				integrity="sha384-NHtbx1Hf6ctHNdZmU28YfhGjB63gcU1YU64ttM+c0RxMKNBj67j+N/axpqTfdffo">
+		</script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.15/js/dataTables.bootstrap.min.js"
+				asp-fallback-src="~/lib/datatables/media/js/dataTables.bootstrap.min.js"
+				asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.dataTable"
+				crossorigin="anonymous"
+				integrity="sha384-7PXRkl4YJnEpP8uU4ev9652TTZSxrqC8uOpcV1ftVEC7LVyLZqqDUAaq+Y+lGgr9">
+		</script>
+		<script src="~/lib/wms/js/wms.min.js" asp-append-version="true"></script>
+	</environment>
+	<script>
+		$(function () {
+			WMS.Document.Options.DefaultTitle = "MyApp";
+			WMS.Ajax.Security.XsrfRequestToken = function () { return Cookies.get('XSRF-TOKEN'); };
+			WMS.Init();
+		});
+	</script>
+</body>
+</html>

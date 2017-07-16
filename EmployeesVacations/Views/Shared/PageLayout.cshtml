@@ -1,0 +1,9 @@
+﻿<section @(Html.Raw(ViewData.ContainsKey("PageLayoutName") ? " id=\"" + ViewData["PageLayoutName"] + "\"" : ""))>
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12">
+				@RenderBody()
+			</div>
+		</div>
+	</div>
+</section>

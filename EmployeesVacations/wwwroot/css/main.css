@@ -1,0 +1,54 @@
+﻿#wrapper {
+	padding-top: 50px;
+	padding-bottom: 20px;
+}
+
+	#wrapper > #loading-spinner {
+		margin: 30px auto;
+	}
+
+#navigation-top #loading-spinner {
+	margin: 16px 15px;
+	float: left;
+}
+
+#loginForm #loading-spinner {
+	display: inline-block;
+	margin: 0 15px;
+	vertical-align: middle;
+}
+
+
+#wrapper > #loading-spinner {
+	margin: 30px auto;
+}
+
+#loginSection {
+	padding-top: 50px;
+}
+
+	#loginSection form,
+	#activeForm form {
+		width: 700px;
+		margin: 50px auto 0;
+	}
+
+@media (max-width: 767px) {
+	#loginForm form {
+		width: 90%;
+		margin: 50px 5% 0;
+	}
+}
+
+
+#homePanel img.avatar {
+	width: 150px;
+}
+
+#homePanel .jumbotron {
+	background-color: transparent;
+}
+
+#navigation-top {
+	margin-bottom: 0;
+}
