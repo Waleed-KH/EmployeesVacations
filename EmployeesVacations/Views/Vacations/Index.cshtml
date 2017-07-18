@@ -1,0 +1,140 @@
+﻿@model Vacation
+
+<title>Vacations</title>
+<div id="page-wrapper">
+	<section>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="page-header">
+						<h1>@Model.Employee.Name Vacations</h1>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">@Model.Employee.Name Vacations</h3>
+						</div>
+						<div id="VacationsTable"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</div>
+<script>
+	$(function () {
+		'use strict';
+
+		var tableContainer = $('#VacationsTable').html("");
+		var vacationsTable = $('<table class="table table-striped table-hover"></table>').appendTo(tableContainer).DataTable({
+			dom: '<"row"<"pull-left"l><"pull-right"f>>t<"panel-footer"<"row"<"pull-left"<"#dt-buttons">><"pull-right"p>>>',
+			columns: [
+				{ title: "@Html.DisplayNameFor(p => p.VacationId)", name: 'vacationId', data: 'vacationId' },
+				{
+					title: "@Html.DisplayNameFor(p => p.Type)", name: 'type', data: 'type',
+					render: function (data, type) {
+						return type === "display" || type === "filter" ?
+							data == 0 ? 'Annual' : (data == 1 ? 'Sick' : 'Unpaid') :
+							data;
+					}
+				},
+				{
+					title: "@Html.DisplayNameFor(p => p.StartDate)", name: 'startDate', data: 'startDate',
+					render: $.fn.dataTable.render.date()
+				},
+				{
+					title: "@Html.DisplayNameFor(p => p.EndDate)", name: 'endDate', data: 'endDate',
+					render: $.fn.dataTable.render.date()
+				},
+				{ title: "@Html.DisplayNameFor(p => p.Duration)", name: 'duration', data: 'duration' },
+				{
+					title: "", name: 'actions', searchable: false, orderable: false,
+					defaultContent:
+					'<button type="button" class="btn btn-info" data-action="editVacation"><i class="fa fa-pencil-square-o"></i> Edit</button> ' +
+					'<button type="button" class="btn btn-danger" data-action="removeVacation"><i class="fa fa-times"></i> Remove</button>',
+					createdCell: function (td, cellData, rowData, row, col) {
+						$('[data-action="editVacation"]', td).click(function () {
+							cuFormLoad('/Vacations/Edit/' + rowData.vacationId, "Edit Vacation #" + rowData.vacationId + " for @Model.Employee.Name");
+						});
+						$('[data-action="removeVacation"]', td).click(function () {
+							bootbox.dialog({
+								title: "Remove Vacation #" + rowData.vacationId + " for @Model.Employee.Name",
+								message: "Are you sure that you want to remove vacation <strong>#" + rowData.vacationId + " for @Model.Employee.Name</strong>?",
+								buttons: {
+									cancel: {
+										label: "Cancel",
+										className: "btn-default"
+									},
+									remove: {
+										label: "Remove",
+										className: "btn-danger",
+										callback: function () {
+											WMS.Ajax.Action('/Vacations', 'Delete', {
+												success: function () {
+													vacationsTable.ajax.reload($.noop, false);
+												},
+												data: { id: rowData.vacationId }
+											});
+										}
+									}
+								},
+								onEscape: true
+							});
+						});
+					}
+				},
+			],
+			serverSide: true,
+			ajax: {
+				type: "POST",
+				dataType: "json",
+				url: "/Vacations/@Model.Employee.EmployeeId",
+				data: {
+					action: 'Get'
+				}
+			},
+			initComplete: function () {
+				var addButton = $('<button class="btn btn-primary" id="addVacation"><i class="fa fa-plus"></i> Add Vacation</button>').click(function () {
+					var $this = $(this);
+					cuFormLoad('/Vacations/@Model.Employee.EmployeeId/Add', $this.text() + " for @Model.Employee.Name");
+				});
+				addButton.appendTo('#VacationsTable #dt-buttons');
+			}
+		});
+
+		function cuFormLoad(url, title) {
+			WMS.Ajax.Page.Get(url, function (form) {
+				var $form = $(form);
+				var $formSubmit = $form.find(':submit')
+				$formSubmit.closest('.form-group').hide();
+				$form.on('ajax:success', function () {
+					dialog.modal('hide');
+					vacationsTable.ajax.reload($.noop, false);
+				});
+				var dialog = bootbox.dialog({
+					title: title,
+					className: 'vacationFormDialog',
+					message: $form,
+					size: 'large',
+					buttons: {
+						cancel: {
+							label: "Cancel",
+							className: "btn-default"
+						},
+						submit: {
+							label: $formSubmit.text(),
+							className: "btn-primary dialog-submit",
+							callback: function () {
+								$form.submit();
+								return false;
+							}
+						}
+					}
+				});
+			});
+		}
+	});
+</script>

@@ -21,6 +21,7 @@ namespace EmployeesVacations.Controllers
 			_employeeRepository = employeeRepository;
 		}
 
+		[HttpGet]
 		public IActionResult Index()
 		{
 			return View();

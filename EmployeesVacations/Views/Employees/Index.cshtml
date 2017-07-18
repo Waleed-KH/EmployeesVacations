@@ -1,8 +1,8 @@
 ﻿@model EmployeeViewModel
 
 <title>Employees</title>
-<section>
-	<div id="page-wrapper">
+<div id="page-wrapper">
+	<section>
 		<div class="container">
 			<div class="row">
 				<div class="col-md-12">
@@ -22,8 +22,8 @@
 				</div>
 			</div>
 		</div>
-	</div>
-</section>
+	</section>
+</div>
 <script>
 	$(function () {
 		'use strict';
@@ -44,31 +44,25 @@
 				},
 				{
 					title: "@Html.DisplayNameFor(p => p.Birthdate)", name: 'birthdate', data: 'birthdate',
-					render: function (data, type) {
-						data = data.replace(/T.*/, '');
-						var dateSplit = data.split('-');
-						return type === "display" || type === "filter" ?
-							dateSplit[2] + '/' + dateSplit[1] + '/' + dateSplit[0] :
-							data;
-					}
+					render: $.fn.dataTable.render.date()
 				 },
 				{ title: "@Html.DisplayNameFor(p => p.Email)", name: 'email', data: 'email' },
 				{ title: "@Html.DisplayNameFor(p => p.Address)", name: 'address', data: 'address' },
 				{
 					title: "", name: 'actions', searchable: false, orderable: false,
 					defaultContent:
-					'<button type="button" class="btn btn-primary" data-action="vacations"><i class="fa fa-suitcase"></i> Vacations <span class="badge"></span></button> ' +
+					'<a type="button" class="btn btn-primary vacationsLink"><i class="fa fa-suitcase"></i> Vacations <span class="badge"></span></a> ' +
 					'<button type="button" class="btn btn-info" data-action="editEmployee"><i class="fa fa-pencil-square-o"></i></button> ' +
 					'<button type="button" class="btn btn-danger" data-action="removeEmployee"><i class="fa fa-user-times"></i></button>',
 					createdCell: function (td, cellData, rowData, row, col) {
-						$('[data-action="vacations"] .badge', td).text(rowData.vacationsCount);
+						$('.vacationsLink', td).attr('href', '/Vacations/' + rowData.employeeId).find('.badge').text(rowData.vacationsCount);
 						$('[data-action="editEmployee"]', td).click(function () {
 							cuFormLoad('/Employees/Edit/' + rowData.employeeId, "Edit Employee - " + rowData.name);
 						});
 						$('[data-action="removeEmployee"]', td).click(function () {
 							bootbox.dialog({
-								title: "Remove Employees - " + rowData.name,
-								message: "Are you sure that you want to remove employees <strong>" + rowData.name + "</strong>?",
+								title: "Remove Employee - " + rowData.name,
+								message: "Are you sure that you want to remove employee <strong>" + rowData.name + "</strong>?",
 								buttons: {
 									cancel: {
 										label: "Cancel",

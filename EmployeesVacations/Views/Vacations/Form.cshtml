@@ -1,0 +1,43 @@
+﻿@model Vacation
+@{ 
+	var edit = (string)ViewData["action"] == "edit";
+	var actionStr = edit ? "Edit" : "Add";
+}
+<form role="form" class="form-horizontal" asp-antiforgery="true" action="/Vacations/@actionStr" id="employeeForm">
+	@if (edit) { <input type="hidden" asp-for="VacationId"> }
+	<input type="hidden" asp-for="EmployeeId">
+	<div class="form-group">
+		<label class="col-sm-2 control-label">@Html.DisplayNameFor(model => model.Type)</label>
+		<div class="col-sm-10">
+			<label class="radio-inline"><input type="radio" name="Type" data-val="true" value="0"@(edit && Model.Type == VacationType.Annual ? " checked" : "")> Annual</label>
+			<label class="radio-inline"><input type="radio" name="Type" data-val="true" value="1"@(edit && Model.Type == VacationType.Sick ? " checked" : "")> Sick</label>
+			<label class="radio-inline"><input type="radio" name="Type" data-val="true" value="2"@(edit && Model.Type == VacationType.Unpaid ? " checked" : "")> Unpaid</label>
+
+		</div>
+	</div>
+	<div class="form-group">
+		<label asp-for="StartDate" class="col-sm-2 control-label"></label>
+		<div class="col-sm-10">
+			<input asp-for="StartDate" class="form-control" placeholder="@Html.DisplayNameFor(model => model.StartDate)">
+		</div>
+	</div>
+	<div class="form-group">
+		<label asp-for="EndDate" class="col-sm-2 control-label"></label>
+		<div class="col-sm-10">
+			<input asp-for="EndDate" class="form-control" placeholder="@Html.DisplayNameFor(model => model.EndDate)">
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<button type="submit" class="btn btn-primary">@(edit ? "Save" : "Add")</button>
+		</div>
+	</div>
+</form>
+<script>
+	$(function () {
+		$('#employeeForm').ajaxForm({
+			loadingText: "@(edit ? "Sav" : "Add")ing...",
+			doneText: "@(edit ? "Sav" : "Add")ed"
+		});
+	});
+</script>

@@ -1,12 +1,13 @@
-﻿using System;
+﻿using EmployeesVacations.Models;
+using System;
 
 namespace EmployeesVacations.Data.Repositories
 {
 	public class AppRepositories
 	{
-		public EmployeesRepository Employees { get; }
-		public VacationsRepository Vacations { get; }
-		public AppRepositories(EmployeesRepository employees, VacationsRepository vacations)
+		public IRepository<Employee> Employees { get; }
+		public IRepository<Vacation> Vacations { get; }
+		public AppRepositories(IRepository<Employee> employees, IRepository<Vacation> vacations)
 		{
 			Employees = employees;
 			Vacations = vacations;

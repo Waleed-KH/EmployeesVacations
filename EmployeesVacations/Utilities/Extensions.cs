@@ -7,7 +7,7 @@ using DataTables.AspNet.Core;
 
 namespace EmployeesVacations.Utilities
 {
-	public static class QueryableExtensions
+	public static class Extensions
 	{
 		public static IQueryable<T> OrderBy<T>(this IQueryable<T> source, IEnumerable<IColumn> sortModels)
 		{
@@ -26,6 +26,10 @@ namespace EmployeesVacations.Utilities
 				count++;
 			}
 			return count > 0 ? source.Provider.CreateQuery<T>(expression) : source;
+		}
+		public static bool Between(this DateTime date, DateTime min, DateTime max)
+		{
+			return (date >= min && date <= max);
 		}
 	}
 }
