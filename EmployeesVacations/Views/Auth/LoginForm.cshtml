@@ -20,18 +20,17 @@
 	</div>
 </form>
 <script>
-	(function () {
+	$(function () {
 		var $loginForm = $('#loginForm');
-		$.validator.unobtrusive.parse($loginForm);
 		$loginForm.ajaxForm({
 			loadingText: "Signing in...",
 			success: function () {
 				$.ajax('/?_storeXsrfToken=1', {
 					success: function (rsp) {
-						$('#loginForm').hide(WMS.User.CheckLogin);
+						$loginForm.hide(WMS.User.CheckLogin);
 					 }
 				});
 			}
 		});
-	})();
+	});
 </script>

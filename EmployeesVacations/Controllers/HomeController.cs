@@ -4,21 +4,21 @@ using EmployeesVacations.Utilities;
 using EmployeesVacations.Auth;
 using EmployeesVacations.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using EmployeesVacations.Data;
+using EmployeesVacations.Controllers.Internal;
 
 namespace EmployeesVacations.Controllers
 {
 	[Route("")]
-	[Authorize]
-	public class HomeController : BaseController
+	public class HomeController : UserController
 	{
 		public HomeController(SignInManager signInManager) : base(signInManager)
 		{
 		}
 
-		[Route("")]
 		public IActionResult Index()
 		{
-			return View(new User() { IdentityUser = SignInManager.CurrentUser });
+			return View(new UserViewModel() { IdentityUser = CurrentUser });
 		}
 	}
 }

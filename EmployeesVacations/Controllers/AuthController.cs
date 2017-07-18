@@ -1,35 +1,46 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Dynamic;
 using System.Threading.Tasks;
-using EmployeesVacations.Auth;
-using EmployeesVacations.Utilities;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using System.Dynamic;
-using Microsoft.AspNetCore.Mvc;
+using EmployeesVacations.Auth;
+using EmployeesVacations.Utilities;
 using EmployeesVacations.ViewModels;
-using Microsoft.AspNetCore.Authorization;
+using EmployeesVacations.Controllers.Internal;
 
 namespace EmployeesVacations.Controllers
 {
-	public class AuthController : BaseController
+	public class AuthController : UserController
 	{
 		private readonly UserManager<IdentityUser> _userManager;
+		private readonly SignInManager _signInManager;
 
 		public AuthController(SignInManager signInManager, UserManager<IdentityUser> userManager) : base(signInManager)
 		{
 			_userManager = userManager;
+			_signInManager = signInManager;
 		}
 
-		[ActionRequest()]
+		[ActionRequest]
 		[AllowAnonymous]
 		public IActionResult CheckSignedIn()
 		{
 			dynamic data = new ExpandoObject();
-			data.IsSignedIn = SignInManager.IsSignedIn;
+			data.IsSignedIn = _signInManager.IsSignedIn;
 			if (data.IsSignedIn)
-				data.User = SignInManager.CurrentUser;
+			{
+				data.User = _signInManager.CurrentUser;
+				data.NavItems = new dynamic[]
+				{
+					new
+					{
+						Label = "Employees",
+						Link = "/Employees"
+					}
+				};
+			}
 			return Ok(data);
 		}
 
@@ -52,18 +63,25 @@ namespace EmployeesVacations.Controllers
 				if (user == null)
 					return Ok(failData);
 
-				var result = await SignInManager.PasswordSignInAsync(user, loginData.Password, false, false);
+				var result = await _signInManager.PasswordSignInAsync(user, loginData.Password, false, false);
 				if (result.Succeeded)
-					return Ok(new { Result = 1, Msg = "Welcome " + user.UserName + ", We hope you are in better health.", User = user });
+				{
+					return Ok(new
+					{
+						Result = 1,
+						Msg = "Welcome " + user.UserName + ", We hope you are in better health.",
+						User = user,
+					});
+				}
 			}
 
 			return Ok(failData);
 		}
 
-		[ActionRequest()]
+		[ActionRequest]
 		public async Task<IActionResult> Logout()
 		{
-			await SignInManager.SignOutAsync();
+			await _signInManager.SignOutAsync();
 			return Ok(new { Result = 1, Msg = "You have signed out successfully." });
 		}
 

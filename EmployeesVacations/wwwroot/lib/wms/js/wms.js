@@ -691,7 +691,7 @@
 		if (WMS.IsDefined(container) && !WMS.IsString(container))
 			throw "expected string value for 'container' option";
 
-		var pjax = options.push || options.replace;
+		var pjax = options.push || options.replace || options._pjax;
 		var context = options.context = $(options.container);
 		if (pjax && !context.length)
 			throw "the container selector '" + options.container + "' did not match anything";
@@ -794,7 +794,7 @@
 
 			if (context.length) {
 				var ctnr = WMS.Document.ExtractContainer(data, options.fragment); //extractContainer(data, xhr, options)
-				var previousState = WMS.Ajax.state;
+				var previousState = WMS.Ajax.State;
 
 				if (pjax) {
 					if (!ctnr.contents) {
@@ -825,11 +825,11 @@
 
 				//if (container.title) document.title = container.title;
 
-				fire('ajax:beforeReplace', [ctnr, options], (pjax ? { state: WMS.Ajax.State, previousState: previousState } : {}))
+				fire('ajax:beforeReplace', [ctnr, options], (pjax ? { state: WMS.Ajax.State, previousState: previousState } : {}));
 				if ($.isFunction(beforeReplaceFn)) beforeReplaceFn(ctnr, options);
 				WMS.Document.ReplaceContents(context, ctnr, {
 					afterReplace: function () {
-						fire('ajax:afterReplace', [ctnr, options])
+						fire('ajax:afterReplace', [ctnr, options]);
 						if ($.isFunction(afterReplaceFn)) afterReplaceFn(ctnr, options);
 					},
 					complete: function () {
@@ -855,13 +855,13 @@
 
 						if (WMS.IsNumber(scrollTo)) WMS.$window.scrollTop(scrollTo);
 
-						fire('ajax:replaceComplete', [ctnr, options])
+						fire('ajax:replaceComplete', [ctnr, options]);
 						if ($.isFunction(replaceCompleteFn)) replaceCompleteFn(ctnr, options);
 					}
 				});
 			}
 
-			fire('ajax:success', [data, status, xhr, options])
+			fire('ajax:success', [data, status, xhr, options]);
 			if ($.isFunction(successFn)) successFn(data, status, xhr, options);
 		}
 
@@ -943,6 +943,7 @@
 		});
 	}
 
+		// TODP: Improvements
 	WMS.Ajax.Form = function (form, options) {
 		return $(form).each(function () {
 			var thisForm = $(this);
@@ -963,10 +964,16 @@
 					formInputs.prop("disabled", false);
 				}, 5000);
 
-				if (s && $.isFunction(opts.success)) opts.success(respond);
-				if (!s && $.isFunction(opts.error)) opts.error(respond);
+				if (s) {
+					if ($.isFunction(opts.success)) opts.success(respond);
+					thisForm.trigger("ajax:success", [respond, opts]);
+				} else {
+					if ($.isFunction(opts.error)) opts.error(respond);
+					thisForm.trigger("ajax:error", [respond, opts]);
+				}
 			};
 
+			$.validator.unobtrusive.parse(thisForm);
 			thisForm.$ajaxForm({
 				url: opts.url,
 				type: opts.type,
@@ -1000,7 +1007,7 @@
 	}
 
 	WMS.Pjax = function (url, options) {
-		return WMS.Ajax($.extend({}, WMS.Pjax.Settings, WMS.Utils.DataFor('url', url, options)))
+		return WMS.Ajax($.extend({ _pjax: true }, WMS.Pjax.Settings, WMS.Utils.DataFor('url', url, options)))
 	}
 	WMS.Pjax.Settings = {
 		timeout: 0,
@@ -1029,7 +1036,7 @@
 		return (location.pathname + location.search + location.hash);
 	}
 	WMS.Ajax.Page.Get = function (url, success, data) {
-		ajax({
+		WMS.Ajax({
 			url: url,
 			data: data,
 			success: success
@@ -1159,10 +1166,12 @@
 		initialPop = false;
 
 	function onPjaxPopstate(event) {
-
 		// Hitting back or forward should override any pending PJAX request.
 		if (!initialPop) {
 			abortXHR(WMS.Ajax.xhr);
+		}
+		if (event.originalEvent) {
+			event = event.originalEvent;
 		}
 
 		var previousState = WMS.Ajax.State;
@@ -1192,7 +1201,7 @@
 				if (previousState) {
 					// Cache current container before replacement and inform the
 					// cache which direction the history shifted.
-					cachePop(direction, previousState.id, WMS.Document.cloneContents(container));
+					cachePop(direction, previousState.id, WMS.Document.CloneContents(container));
 				}
 
 				//if ($.isFunction(state.popstate)) state.popstate(state, direction);
@@ -1340,15 +1349,15 @@
 			notify: false,
 			success: function (respond) {
 				WMS.User.IsSignedIn = respond.IsSignedIn;
-				//WMS.User.navbarItems = respond.navbarItems;
+				WMS.User.NavItems = respond.NavItems;
 				WMS.User.Data = respond.User;
 
 				var navItems = "";
 				var userName = "";
 				if (WMS.User.IsSignedIn) {
-					//WMS.User.navbarItems.forEach(function (item) {
-					//	navItems += '<li><a href="' + item.link + '">' + item.label + '</a></li>'
-					//});
+					WMS.User.NavItems.forEach(function (item) {
+						navItems += '<li><a href="' + item.link + '">' + item.label + '</a></li>'
+					});
 					$(WMS.Ajax.Page.Settings.logo).attr('href', '/');
 					userName = WMS.User.Data.userName;
 					if (goHome)
@@ -1357,6 +1366,10 @@
 						WMS.Ajax.Page.Load();
 				} else {
 					$(WMS.Ajax.Page.Settings.logo).attr('href', 'javascript:void(0)');
+					if (goHome) {
+						WMS.Ajax.State = null;
+						window.history.pushState(null, "", "/");
+					}
 					WMS.Ajax.Page.Load('/Auth/Login');
 				}
 

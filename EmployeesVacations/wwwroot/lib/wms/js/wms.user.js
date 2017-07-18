@@ -13,15 +13,15 @@
 			notify: false,
 			success: function (respond) {
 				WMS.User.IsSignedIn = respond.IsSignedIn;
-				//WMS.User.navbarItems = respond.navbarItems;
+				WMS.User.NavItems = respond.NavItems;
 				WMS.User.Data = respond.User;
 
 				var navItems = "";
 				var userName = "";
 				if (WMS.User.IsSignedIn) {
-					//WMS.User.navbarItems.forEach(function (item) {
-					//	navItems += '<li><a href="' + item.link + '">' + item.label + '</a></li>'
-					//});
+					WMS.User.NavItems.forEach(function (item) {
+						navItems += '<li><a href="' + item.link + '">' + item.label + '</a></li>'
+					});
 					$(WMS.Ajax.Page.Settings.logo).attr('href', '/');
 					userName = WMS.User.Data.userName;
 					if (goHome)
@@ -30,6 +30,10 @@
 						WMS.Ajax.Page.Load();
 				} else {
 					$(WMS.Ajax.Page.Settings.logo).attr('href', 'javascript:void(0)');
+					if (goHome) {
+						WMS.Ajax.State = null;
+						window.history.pushState(null, "", "/");
+					}
 					WMS.Ajax.Page.Load('/Auth/Login');
 				}
 

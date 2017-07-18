@@ -14,10 +14,7 @@
     <Content Include="wwwroot\images\default-avatar-small.png" />
     <Content Include="wwwroot\images\default-avatar.png" />
     <Content Include="wwwroot\lib\bootbox.js\bootbox.min.js" />
-    <Content Include="wwwroot\lib\wms\css\main.css" />
-    <Content Include="wwwroot\lib\wms\css\main.min.css" />
     <Content Include="wwwroot\lib\wms\css\wms.css" />
-    <Content Include="wwwroot\lib\wms\css\wms.min.css" />
     <Content Include="wwwroot\lib\wms\js\jquery.pjax.js" />
     <Content Include="wwwroot\lib\wms\js\wms-old.js" />
     <Content Include="wwwroot\lib\wms\js\wms.ajax.js" />
