@@ -27,6 +27,7 @@
     <Content Include="wwwroot\lib\wms\js\wms.user.js" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="DataTables.AspNet.AspNetCore" Version="2.0.2" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="1.1.2" />

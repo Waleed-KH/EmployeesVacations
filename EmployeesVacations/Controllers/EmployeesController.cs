@@ -6,6 +6,10 @@ using EmployeesVacations.ViewModels;
 using EmployeesVacations.Controllers.Internal;
 using EmployeesVacations.Data.Repositories;
 using EmployeesVacations.Models;
+using DataTables.AspNet.Core;
+using DataTables.AspNet.AspNetCore;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace EmployeesVacations.Controllers
 {
@@ -22,12 +26,31 @@ namespace EmployeesVacations.Controllers
 			return View();
 		}
 
+		//[ActionRequest]
+		//public IActionResult Get()
+		//{
+		//	return Ok(new
+		//	{
+		//		Data = _employeeRepository.Select(a => new EmployeeViewModel()
+		//		{
+		//			EmployeeId = a.EmployeeId,
+		//			Name = a.Name,
+		//			Gender = a.Gender,
+		//			Birthdate = a.Birthdate,
+		//			Email = a.Email,
+		//			Address = a.Address,
+		//			VacationsCount = a.Vacations.Count()
+		//		}).ToList()
+		//	});
+		//}
+
 		[ActionRequest]
-		public IActionResult Get()
+		public IActionResult Get([FromForm] IDataTablesRequest request)
 		{
-			return Ok(new
+			IDataTablesResponse response;
+			if (ModelState.IsValid)
 			{
-				Data = _employeeRepository.Select(a => new EmployeeViewModel()
+				var data = _employeeRepository.Select(a => new EmployeeViewModel()
 				{
 					EmployeeId = a.EmployeeId,
 					Name = a.Name,
@@ -36,9 +59,27 @@ namespace EmployeesVacations.Controllers
 					Email = a.Email,
 					Address = a.Address,
 					VacationsCount = a.Vacations.Count()
-				}).ToList()
-			});
+				});
+
+				var filteredData = String.IsNullOrWhiteSpace(request.Search.Value)
+					? data : data.Where(e =>
+						e.EmployeeId.ToString().Contains(request.Search.Value) ||
+						e.Name.Contains(request.Search.Value));
+
+				var dataPage = filteredData.OrderBy(request.Columns.Where(x => x.Sort != null)).Skip(request.Start).Take(request.Length);
+
+				response = DataTablesResponse.Create(request, data.Count(), filteredData.Count(), dataPage.ToList());
+			}
+			else
+			{
+				response = DataTablesResponse.Create(request, "Error getting employees data!", new Dictionary<string, object>()
+				{
+					{ "ModelState", ModelState }
+				});
+			}
+			return new DataTablesJsonResult(response, true);
 		}
+
 
 		[HttpGet("[action]")]
 		public IActionResult Add()

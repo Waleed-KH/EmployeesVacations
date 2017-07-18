@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Http;
 using EmployeesVacations.Utilities;
 using EmployeesVacations.Data.Repositories;
+using DataTables.AspNet.AspNetCore;
 
 namespace EmployeesVacations
 {
@@ -46,6 +47,7 @@ namespace EmployeesVacations
 			services.TryAddScoped<SignInManager>();
 			services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 			services.AddAppRepositories();
+			services.RegisterDataTables();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
