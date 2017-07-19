@@ -48,9 +48,8 @@ namespace EmployeesVacations.Controllers
 				if (!String.IsNullOrWhiteSpace(request.Search.Value))
 				{
 					DateTime dateFilter;
-					bool searchDate = DateTime.TryParse(request.Search.Value, out dateFilter);
 					filteredData = data.Where(e =>
-						searchDate ? (dateFilter == e.StartDate || dateFilter == e.EndDate) : false ||
+						DateTime.TryParse(request.Search.Value, out dateFilter) ? dateFilter.Between(e.StartDate, e.EndDate) : false ||
 						e.Type.ToString().Contains(request.Search.Value));
 				}
 				else
@@ -60,7 +59,10 @@ namespace EmployeesVacations.Controllers
 
 				var dataPage = filteredData.OrderBy(request.Columns.Where(x => x.Sort != null)).Skip(request.Start).Take(request.Length);
 
-				response = DataTablesResponse.Create(request, data.Count(), filteredData.Count(), dataPage.ToList());
+				response = DataTablesResponse.Create(request, data.Count(), filteredData.Count(), dataPage.ToList(), new Dictionary<string, object>()
+				{
+					{ "totalDays", data.Sum(e => e.Duration) }
+				});
 			}
 			else
 			{

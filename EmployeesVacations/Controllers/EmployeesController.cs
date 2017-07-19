@@ -65,7 +65,8 @@ namespace EmployeesVacations.Controllers
 				var filteredData = String.IsNullOrWhiteSpace(request.Search.Value)
 					? data : data.Where(e =>
 						e.EmployeeId.ToString().Contains(request.Search.Value) ||
-						e.Name.Contains(request.Search.Value));
+						e.Name.Contains(request.Search.Value) ||
+						e.Email.Contains(request.Search.Value));
 
 				var dataPage = filteredData.OrderBy(request.Columns.Where(x => x.Sort != null)).Skip(request.Start).Take(request.Length);
 

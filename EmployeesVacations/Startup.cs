@@ -47,7 +47,8 @@ namespace EmployeesVacations
 			services.TryAddScoped<SignInManager>();
 			services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 			services.AddAppRepositories();
-			services.RegisterDataTables();
+			services.RegisterDataTables(new DataTablesOptions());
+			DataTables.AspNet.AspNetCore.Configuration.Options.EnableResponseAdditionalParameters();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
