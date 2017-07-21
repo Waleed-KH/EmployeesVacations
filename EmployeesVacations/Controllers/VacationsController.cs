@@ -43,14 +43,22 @@ namespace EmployeesVacations.Controllers
 			IDataTablesResponse response;
 			if (ModelState.IsValid)
 			{
-				var data = _repository.Vacations.Where(v => v.EmployeeId == employeeId);
+				var data = _repository.Vacations.Where(v => v.EmployeeId == employeeId).ToList().AsQueryable();
 				IQueryable<Vacation> filteredData;
 				if (!String.IsNullOrWhiteSpace(request.Search.Value))
 				{
-					DateTime dateFilter;
-					filteredData = data.Where(e =>
-						DateTime.TryParse(request.Search.Value, out dateFilter) ? dateFilter.Between(e.StartDate, e.EndDate) : false ||
-						e.Type.ToString().Contains(request.Search.Value));
+					if (DateTime.TryParse(request.Search.Value, out var dateFilter))
+					{
+						filteredData = data.Where(e => dateFilter.Between(e.StartDate, e.EndDate));
+					}
+					else if (Enum.TryParse<VacationType>(request.Search.Value, true, out var typeFilter))
+					{
+						filteredData = data.Where(e => e.Type == typeFilter);
+					}
+					else
+					{
+						filteredData = data;
+					}
 				}
 				else
 				{

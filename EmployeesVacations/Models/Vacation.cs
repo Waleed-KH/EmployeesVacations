@@ -17,11 +17,11 @@ namespace EmployeesVacations.Models
 		[Required]
 		[DataType(DataType.Date)]
 		public DateTime EndDate { get; set; }
-		public int Duration
+		public double Duration
 		{
 			get
 			{
-				return (EndDate - StartDate).Days;
+				return (EndDate - StartDate).TotalDays;
 			}
 		}
 		public int EmployeeId { get; set; }

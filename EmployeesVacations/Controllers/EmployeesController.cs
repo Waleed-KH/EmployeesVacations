@@ -62,11 +62,13 @@ namespace EmployeesVacations.Controllers
 					VacationsCount = a.Vacations.Count()
 				});
 
-				var filteredData = String.IsNullOrWhiteSpace(request.Search.Value)
-					? data : data.Where(e =>
-						e.EmployeeId.ToString().Contains(request.Search.Value) ||
+				var filteredData = !String.IsNullOrWhiteSpace(request.Search.Value) ?
+						int.TryParse(request.Search.Value, out int idFilter) ? data.Where(e =>
+						e.EmployeeId == idFilter ||
 						e.Name.Contains(request.Search.Value) ||
-						e.Email.Contains(request.Search.Value));
+						e.Email.Contains(request.Search.Value)) : data.Where(e =>
+						e.Name.Contains(request.Search.Value) ||
+						e.Email.Contains(request.Search.Value)) : data;
 
 				var dataPage = filteredData.OrderBy(request.Columns.Where(x => x.Sort != null)).Skip(request.Start).Take(request.Length);
 

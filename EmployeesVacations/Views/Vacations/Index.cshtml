@@ -29,7 +29,7 @@
 		'use strict';
 
 		var tableContainer = $('#VacationsTable').html("");
-		var totalDaysLable = $(' <div class="form-group"><div class="input-group"><span class="input-group-addon"><label>Total Vacation Days</label></span><span class="form-control" id="totalDays"></span></div></div>');
+		var totalDaysLable = $('<div class="form-group"><div class="input-group"><span class="input-group-addon"><label>Total Vacation Days</label></span><span class="form-control" id="totalDays"></span></div></div>');
 		var vacationsTable = $('<table class="table table-striped table-hover"></table>').appendTo(tableContainer).DataTable({
 			dom: '<"row"<"pull-left"l><"pull-right"f>>t<"panel-footer"<"row"<"pull-left"<"#dt-buttons">><"pull-right"p>>>',
 			columns: [
@@ -106,7 +106,7 @@
 					var $this = $(this);
 					cuFormLoad('/Vacations/@Model.Employee.EmployeeId/Add', $this.text() + " for @Model.Employee.Name");
 				});
-				$('#VacationsTable #dt-buttons').append(addButton).append(totalDaysLable);
+				$('#VacationsTable #dt-buttons').append(addButton).append(' ').append(totalDaysLable);
 			}
 		});
 
